@@ -12,8 +12,19 @@ export const getCollections = async () => {
 };
 
 export const getCollectionDetails = async (collectionId: string) => {
-  const collection = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections/${collectionId}`)
-  return await collection.json()
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/collections/${collectionId}`,
+    {
+      cache: "no-store", // ⬅️ this is the fix
+    }
+  );
+
+  if (!res.ok) {
+    console.error("[getCollectionDetails] Failed to fetch");
+    return null;
+  }
+
+  return await res.json();
 }
 
 export const getProducts = async () => {
@@ -31,23 +42,65 @@ export const getProducts = async () => {
 
 
 export const getProductDetails = async (productId: string) => {
-  const product = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`, {
-    cache: "no-store",
-  })
-  return await product.json()
-}
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
+    {
+      cache: "no-store", // 🔁 ensures we always get the latest data
+    }
+  );
+
+  if (!res.ok) {
+    console.error("[getProductDetails] Failed to fetch");
+    return null;
+  }
+
+  return await res.json();
+};
 
 export const getSearchedProducts = async (query: string) => {
-  const searchedProducts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search/${query}`)
-  return await searchedProducts.json()
-}
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/search/${query}`,
+    {
+      cache: "no-store",
+    }
+  );
 
+  if (!res.ok) {
+    console.error("[getSearchedProducts] Failed to fetch");
+    return [];
+  }
+
+  return await res.json();
+};
 export const getOrders = async (customerId: string) => {
-  const orders = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/customers/${customerId}`)
-  return await orders.json()
-}
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/orders/customers/${customerId}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    console.error("[getOrders] Failed to fetch");
+    return [];
+  }
+
+  return await res.json();
+};
+
 
 export const getRelatedProducts = async (productId: string) => {
-  const relatedProducts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/related`)
-  return await relatedProducts.json()
-}
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/related`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    console.error("[getRelatedProducts] Failed to fetch");
+    return [];
+  }
+
+  return await res.json();
+};
